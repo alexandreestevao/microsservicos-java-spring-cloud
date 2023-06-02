@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,21 @@ public class WorkerResource {
 	
 	private static org.jboss.logging.Logger logger = LoggerFactory.logger(WorkerResource.class);
 	
+	@Value("${test.config}")
+	private String testConfig;
+	
 	@Autowired
 	private Environment env;
 
 	@Autowired
 	private WorkerRepository repository;
+	
+	@GetMapping(value = "/configs")
+	public String getConfigs() {
+		logger.info("CONFIG = " + testConfig);
+		logger.info("PORT = " + env.getProperty("local.server.port"));
+		return testConfig;
+	}		
 
 	@GetMapping
 	public ResponseEntity<List<Worker>> findAll() {
